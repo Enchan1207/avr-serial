@@ -7,3 +7,6 @@ add_executable_avr(main)
 target_sources(main PRIVATE
     main.cpp
 )
+target_compile_options(main PRIVATE
+    -Wall
+)
