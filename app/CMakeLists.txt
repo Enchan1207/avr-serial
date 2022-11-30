@@ -9,7 +9,7 @@ set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/cmake/avr_toolchain.cmake")
 # configure MCU
 set(AVR_MCU "atmega328p")
 set(AVRDUDE_MCU "m328p")
-set(AVR_FCPU 8000000)
+set(AVR_FCPU 16000000)
 
 # configure programmer
 set(AVRDUDE_PROGRAMMER "avrisp")
