@@ -31,7 +31,7 @@ ISR(USART_UDRE_vect) {
     PORTB &= ~_BV(LED_BUILTIN);
 }
 
-int main() {
+void main() {
     // Initialize GPIO
     DDRB |= _BV(LED_BUILTIN);
     PORTB |= _BV(LED_BUILTIN);
@@ -41,4 +41,8 @@ int main() {
 
     // Initialize UART
     initSerial(BAUDRATE);
+
+    while (true) {
+        /* do nothing in loop */
+    }
 }
