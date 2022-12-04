@@ -1,11 +1,13 @@
 //
 // SerialComm
 //
+#include <avr/interrupt.h>
 #include <avr/io.h>
 #include <stdlib.h>
 #include <util/delay.h>
 
 #define BAUDRATE 115200
+#define LED_BUILTIN 5  // Dev board has Built-in LED @ PORTB:5
 
 /**
  * @brief initialize Serial communication interface (UART).
@@ -21,29 +23,22 @@ void initSerial(const uint64_t& baudrate) {
     UCSR0B = _BV(TXEN0);
 }
 
+/**
+ * 送信バッファ空き
+ */
+ISR(USART_UDRE_vect) {
+    // latch built-in led
+    PORTB &= ~_BV(LED_BUILTIN);
+}
+
 int main() {
+    // Initialize GPIO
+    DDRB |= _BV(LED_BUILTIN);
+    PORTB |= _BV(LED_BUILTIN);
+
+    // enable interrupt
+    sei();
+
     // Initialize UART
     initSerial(BAUDRATE);
-
-    // message to send
-    const char message[] = "Hello, World! now I can set baudrate from function (not hard-coded)!\n";
-    uint8_t currentIndex = 0;
-
-    // loop
-    while (true) {
-        // 送信できるようになるまで待つ
-        loop_until_bit_is_set(UCSR0A, UDRE0);
-
-        // データレジスタに送信
-        const char next = message[currentIndex];
-        UDR0 = next;
-
-        // 改行を送ったら休む
-        if (next == '\n') {
-            _delay_ms(1000);
-        }
-
-        // インデックスを進める
-        currentIndex = (currentIndex + 1) % sizeof(message);
-    }
 }
