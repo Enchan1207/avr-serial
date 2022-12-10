@@ -40,7 +40,7 @@ ISR(USART_UDRE_vect) {
         return;
     }
 
-    // データバッファに書き出す
+    // データバッファからUSARTへ書き出す
     UDR0 = (char)*LastChar;
     *LastChar = -1;
 
@@ -53,7 +53,7 @@ ISR(USART_UDRE_vect) {
 ISR(USART_RX_vect) {
     bit_set(PORTB, LED_BUILTIN);
 
-    // データバッファに取り込む
+    // USARTからデータバッファへ取り込む
     *LastChar = UDR0;
 }
 
