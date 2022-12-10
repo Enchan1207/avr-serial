@@ -25,7 +25,7 @@ void initSerial(const uint64_t& baudrate) {
     UBRR0 = (uint16_t)ubrr_value;
 
     // enable interrupt
-    UCSR0B |= _BV(TXCIE0) | _BV(RXCIE0) | _BV(UDRE0);
+    UCSR0B |= _BV(TXCIE0) | _BV(RXCIE0) | _BV(UDRIE0);
 
     // allow to send/recv
     UCSR0B |= _BV(TXEN0) | _BV(RXEN0);
