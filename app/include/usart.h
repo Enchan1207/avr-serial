@@ -40,6 +40,20 @@ class USART {
      */
     size_t _print(const char* const str);
 
+    /**
+     * @brief USARTインタフェースの有効化/無効化
+     *
+     * @param isEnable 有効/無効
+     */
+    void setComuunicatability(bool isEnable) const;
+
+    /**
+     * @brief 送信バッファempty割り込みの有効化/無効化
+     *
+     * @param isEnable 有効/無効
+     */
+    void setSendBufferInterruption(bool isEnable) const;
+
    public:
     USART() = default;
     ~USART() = default;

@@ -8,7 +8,10 @@ target_include_directories(usart PUBLIC
     ${CMAKE_SOURCE_DIR}/include
 )
 target_sources(usart PRIVATE
-    usart.cpp
+    event.cpp
+    initialize.cpp
+    communicate.cpp
+    configure.cpp
 )
 target_compile_options(usart PRIVATE
     -Wall
