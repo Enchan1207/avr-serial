@@ -67,3 +67,19 @@ bool USART::write(const uint8_t data) {
     setSendBufferInterruption(true);
     return result;
 }
+
+bool USART::read(uint8_t* const data) {
+    // 受信バッファが空(head = tail) なら戻る
+    if (internalRecvBuffer.head == internalRecvBuffer.tail) {
+        return false;
+    }
+
+    // 該当する位置のデータを読み込み
+    const buffer_size_t head = internalRecvBuffer.head;
+    *data = internalRecvBuffer.rawData[head];
+
+    // headを進める
+    internalRecvBuffer.head = (head + 1) % internalUSARTBufferSize;
+
+    return true;
+}

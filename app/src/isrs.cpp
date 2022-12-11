@@ -9,5 +9,12 @@
  * 送信バッファ空き
  */
 ISR(USART_UDRE_vect) {
-    usart.onUDREmpty();
+    usart.onSendBufferEmpty();
+}
+
+/**
+ * 受信完了
+ */
+ISR(USART_RX_vect) {
+    usart.onReceive();
 }

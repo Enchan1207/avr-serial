@@ -26,15 +26,19 @@ int main() {
     // Initialize UART
     usart.begin(115200);
 
+    usart.println("Hello, World!");
+
     _delay_ms(1000);
 
     while (true) {
-        usart.println("Hello, World!");
+        uint8_t data = 0x00;
 
-        // indicate
-        bit_set(PORTB, builtInLEDOffset);
-        _delay_ms(500);
-        bit_reset(PORTB, builtInLEDOffset);
-        _delay_ms(500);
+        // 受信待機
+        if (!usart.read(&data)) {
+            continue;
+        }
+
+        // 書き戻し
+        usart.write(data);
     }
 }

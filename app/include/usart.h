@@ -54,6 +54,13 @@ class USART {
      */
     void setSendBufferInterruption(bool isEnable) const;
 
+    /**
+     * @brief 受信割り込みの有効化/無効化
+     *
+     * @param isEnable 有効/無効
+     */
+    void setReceiveInterruption(bool isEnable) const;
+
    public:
     USART() = default;
     ~USART() = default;
@@ -82,6 +89,14 @@ class USART {
     bool write(const uint8_t data);
 
     /**
+     * @brief 単一バイト読み込み
+     *
+     * @param data 結果を格納するバッファ
+     * @return bool 受信バッファに値がない場合はfalseが返ります。またその場合 *data は変化しません。
+     */
+    bool read(uint8_t* const data);
+
+    /**
      * @brief 文字列書き込み
      *
      * @param str 書き込む文字列
@@ -104,7 +119,14 @@ class USART {
      *
      * @note ISRから呼ばれることを想定しています。送信バッファが空でなければUDRレジスタへの書き込みを行います。
      */
-    void onUDREmpty();
+    void onSendBufferEmpty();
+
+    /**
+     * @brief 受信割り込み
+     *
+     * @note ISRから呼ばれることを想定しています。受信バッファが空でなければUDRレジスタからの読み出しを行います。
+     */
+    void onReceive();
 };
 
 extern USART usart;

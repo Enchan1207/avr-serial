@@ -29,3 +29,11 @@ void USART::setSendBufferInterruption(bool isEnable) const {
         bit_reset(UCSR0B, UDRIE0);
     }
 }
+
+void USART::setReceiveInterruption(bool isEnable) const {
+    if (isEnable) {
+        bit_set(UCSR0B, RXCIE0);
+    } else {
+        bit_reset(UCSR0B, RXCIE0);
+    }
+}
