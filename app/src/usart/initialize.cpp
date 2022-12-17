@@ -7,7 +7,7 @@
 
 void USART::begin(const uint64_t& baudrate) const {
     // ボーレート設定
-    const uint64_t ubrr_value = (uint64_t)F_CPU / 16 / (baudrate - 1);
+    const double ubrr_value = ((uint64_t)F_CPU / baudrate / 16.0) - 1.0 + 0.5;
     UBRR0 = (uint16_t)ubrr_value;
 
     // 送受信有効化
