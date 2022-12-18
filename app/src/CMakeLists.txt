@@ -3,6 +3,7 @@
 #
 cmake_minimum_required(VERSION 3.0)
 
+add_subdirectory(buffer)
 add_subdirectory(usart)
 
 add_executable_avr(main)
