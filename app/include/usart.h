@@ -41,6 +41,13 @@ class USART {
     size_t _print(const char* const str);
 
     /**
+     * @brief ボーレート設定
+     *
+     * @param baudrate 構成するボーレート
+     */
+    void setBaudRate(const uint64_t& baudrate) const;
+
+    /**
      * @brief USARTインタフェースの有効化/無効化
      *
      * @param isEnable 有効/無効
