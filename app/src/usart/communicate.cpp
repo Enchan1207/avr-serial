@@ -6,21 +6,8 @@
 #include "usart.h"
 
 bool USART::_write(const uint8_t data) {
-    // バッファがいっぱい(tailの次がhead)なら、戻る
-    const buffer_size_t head = internalSendBuffer.head;
-    const buffer_size_t tail = internalSendBuffer.tail;
-    const buffer_size_t nextTail = (tail + 1) % internalUSARTBufferSize;
-    if (nextTail == head) {
-        return false;
-    }
-
-    // tailの位置にdataを書き込み
-    internalSendBuffer.rawData[tail] = data;
-
-    // tailを進める
-    internalSendBuffer.tail = nextTail;
-
-    return true;
+    const BufferResult result = internalSendBuffer.append(data);
+    return result == BufferResult::Success;
 }
 
 size_t USART::_print(const char* const str) {
@@ -69,17 +56,6 @@ bool USART::write(const uint8_t data) {
 }
 
 bool USART::read(uint8_t* const data) {
-    // 受信バッファが空(head = tail) なら戻る
-    if (internalRecvBuffer.head == internalRecvBuffer.tail) {
-        return false;
-    }
-
-    // 該当する位置のデータを読み込み
-    const buffer_size_t head = internalRecvBuffer.head;
-    *data = internalRecvBuffer.rawData[head];
-
-    // headを進める
-    internalRecvBuffer.head = (head + 1) % internalUSARTBufferSize;
-
-    return true;
+    const BufferResult result = internalRecvBuffer.pop(data);
+    return result == BufferResult::Success;
 }

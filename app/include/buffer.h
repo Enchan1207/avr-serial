@@ -77,6 +77,25 @@ class Buffer {
      * @return BufferResult 操作結果
      */
     BufferResult pop(Element* const data);
+
+    /**
+     * @brief バッファがいっぱいかどうか
+     *
+     * @return bool いっぱいならtrue、空きがあればfalse
+     */
+    bool isFull() const {
+        const buffer_size_t nextTail = (tail + 1) & (internalDataSize - 1);
+        return nextTail == head;
+    }
+
+    /**
+     * @brief バッファが空かどうか
+     *
+     * @return bool 空ならtrue、データが存在すればfalse
+     */
+    bool isEmpty() const {
+        return head == tail;
+    }
 };
 
 #endif
