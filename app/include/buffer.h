@@ -38,7 +38,7 @@ class Buffer {
     /**
      * @brief 内部データ長さ
      */
-    const buffer_size_t internalDataSize;
+    buffer_size_t internalDataSize;
 
     /**
      * @brief バッファ先頭
@@ -58,21 +58,7 @@ class Buffer {
      * @param dataSize 領域サイズ
      * @note 領域サイズは2の冪乗であるべきです。それ以外の値を指定した場合、2の冪数のうち領域のサイズを下回らない最大のものが選択されます(15 -> 8, 34 -> 32).
      */
-    Buffer(Element* const data, const buffer_size_t& dataSize) : internalData(data) {
-        // バッファサイズ型のビット数
-        const uint8_t bufferSizeBitLength = sizeof(buffer_size_t) * CHAR_BIT;
-
-        // 上からビットを立てていって、dataSizeとのANDで初めて非ゼロとなる値が最大値
-        for (uint8_t i = bufferSizeBitLength - 1; i > 0; i--) {
-            const buffer_size_t candidate = 1 << i;
-            if ((candidate & dataSize) == 0) {
-                continue;
-            }
-
-            internalDataSize = candidate;
-            break;
-        }
-    };
+    Buffer(Element* const data, const buffer_size_t& dataSize);
 
     ~Buffer() = default;
 
