@@ -13,9 +13,6 @@ target_sources(usart PRIVATE
     communicate.cpp
     configure.cpp
 )
-target_link_libraries(usart
-    buffer
-)
 target_compile_options(usart PRIVATE
     -Wall
 )
