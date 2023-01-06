@@ -140,6 +140,13 @@ macro(add_executable_avr target_name)
         add_custom_target(read-fuse
             COMMAND ${AVRDUDE} ${AVRDUDE_COMMON_FLAGS} -U lfuse:r:-:h -U hfuse:r:-:h -U efuse:r:-:h -U lock:r:-:h
         )
+
+        # ビルドされたバイナリをダンプして情報を表示
+        add_custom_command(TARGET ${target_name} POST_BUILD
+            COMMAND ${CMAKE_OBJDUMP} -h main | sed -n -e \"5p\"
+            COMMAND ${CMAKE_OBJDUMP} -h main | sed -n -r -e \"s/.data/&/p\"
+            COMMAND ${CMAKE_OBJDUMP} -h main | sed -n -r -e \"s/.bss/&/p\"
+        )
     else()
         message(WARNING "uploading port is not specified (AVRDUDE_PORT is not set). flash target won't be created.")
     endif()
