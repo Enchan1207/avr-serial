@@ -8,7 +8,8 @@
 #include <stdint.h>
 #include <string.h>
 
-using buffer_size_t = uint16_t;
+#include "buffer.h"
+
 constexpr buffer_size_t internalUSARTBufferSize = 32;
 
 /**
@@ -16,13 +17,17 @@ constexpr buffer_size_t internalUSARTBufferSize = 32;
  */
 class USART {
    private:
-    struct Buffer {
-        buffer_size_t head = 0;
-        buffer_size_t tail = 0;
-        uint8_t rawData[internalUSARTBufferSize] = {0};
-    };
-    struct Buffer internalSendBuffer;
-    struct Buffer internalRecvBuffer;
+    /**
+     * @brief 内部送信バッファ
+     */
+    uint8_t internalSendBufferDataPointer[internalUSARTBufferSize] = {0};
+    Buffer<uint8_t> internalSendBuffer;
+
+    /**
+     * @brief 内部受信バッファ
+     */
+    uint8_t internalRecvBufferDataPointer[internalUSARTBufferSize] = {0};
+    Buffer<uint8_t> internalRecvBuffer;
 
     /**
      * @brief writeの内部処理
@@ -69,7 +74,7 @@ class USART {
     void setReceiveInterruption(bool isEnable) const;
 
    public:
-    USART() = default;
+    USART() : internalSendBuffer(internalSendBufferDataPointer, internalUSARTBufferSize), internalRecvBuffer(internalRecvBufferDataPointer, internalUSARTBufferSize){};
     ~USART() = default;
 
     // コピーコンストラクタの呼び出しを禁止
