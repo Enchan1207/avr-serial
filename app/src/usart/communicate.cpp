@@ -5,54 +5,35 @@
 
 #include "usart.h"
 
-bool USART::_write(const uint8_t data) {
-    const BufferResult result = internalSendBuffer.append(data);
-    return result == BufferResult::Success;
+size_t USART::write(const uint8_t data) {
+    setSendBufferInterruption(true);
+    waitForSendBufferAvailable();
+    internalSendBuffer.append(data);
+    return 1;
 }
 
-size_t USART::_print(const char* const str) {
-    // バッファが詰まるまで流し込む
-    size_t sentBytesCount = 0;
-    for (size_t i = 0; i < strlen(str); i++) {
-        if (!_write(str[i])) {
-            break;
-        }
-        sentBytesCount++;
+size_t USART::write(const char* const data) {
+    if (data == nullptr) {
+        return 0;
     }
-    return sentBytesCount;
+
+    setSendBufferInterruption(true);
+    size_t dataLength = strlen(data);
+    for (size_t i = 0; i < dataLength; i++) {
+        waitForSendBufferAvailable();
+        internalSendBuffer.append(*(data + i));
+    }
+
+    return dataLength;
 }
 
 size_t USART::print(const char* const str) {
-    // 書き込み
-    size_t sentBytesCount = _print(str);
-
-    // UDRE割り込みを有効化して戻る
-    setSendBufferInterruption(true);
-    return sentBytesCount;
+    // 実質writeですが、フォーマット変換とかその辺を考える場合のために残しています
+    return write(str);
 }
 
 size_t USART::println(const char* const str) {
-    // 書き込み
-    size_t sentBytesCount = _print(str);
-
-    // 改行
-    bool result = _write('\n');
-    if (result) {
-        sentBytesCount++;
-    }
-
-    // UDRE割り込みを有効化して戻る
-    setSendBufferInterruption(true);
-    return sentBytesCount;
-}
-
-bool USART::write(const uint8_t data) {
-    // 1byte分送信バッファに追加
-    bool result = _write(data);
-
-    // UDRE割り込みを有効化して戻る
-    setSendBufferInterruption(true);
-    return result;
+    return write(str) + write("\r\n");
 }
 
 bool USART::read(uint8_t* const data) {

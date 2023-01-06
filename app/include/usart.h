@@ -17,33 +17,28 @@ constexpr buffer_size_t internalUSARTBufferSize = 32;
  */
 class USART {
    private:
+    uint8_t internalSendBufferDataPointer[internalUSARTBufferSize] = {0};
+    uint8_t internalRecvBufferDataPointer[internalUSARTBufferSize] = {0};
+
     /**
      * @brief 内部送信バッファ
      */
-    uint8_t internalSendBufferDataPointer[internalUSARTBufferSize] = {0};
     Buffer<uint8_t> internalSendBuffer;
 
     /**
      * @brief 内部受信バッファ
      */
-    uint8_t internalRecvBufferDataPointer[internalUSARTBufferSize] = {0};
     Buffer<uint8_t> internalRecvBuffer;
 
     /**
-     * @brief writeの内部処理
-     *
-     * @param data 書き込むデータ
-     * @return bool 処理結果
+     * @brief 送信バッファに書き込めるようになるまで待つ
      */
-    bool _write(const uint8_t data);
-
-    /**
-     * @brief printの内部処理
-     *
-     * @param str 書き込むデータ
-     * @return size_t 実際に書き込めたbyte数
-     */
-    size_t _print(const char* const str);
+    void waitForSendBufferAvailable() const {
+        volatile bool isSendBufferUnAvailable = internalSendBuffer.isFull();
+        while (isSendBufferUnAvailable) {
+            isSendBufferUnAvailable = internalSendBuffer.isFull();
+        }
+    }
 
     /**
      * @brief ボーレート設定
@@ -93,20 +88,14 @@ class USART {
     void begin(const uint64_t& baudrate) const;
 
     /**
-     * @brief 単一バイト書き込み
+     * @brief USARTインタフェースへの出力
      *
      * @param data 書き込むデータ
-     * @return bool バッファが満杯等の理由で書き込みに失敗した場合はfalseが返ります。
+     * @return size_t 書き込んだバイト数
+     * @note この関数は内部送信バッファが空くまでブロックします。
      */
-    bool write(const uint8_t data);
-
-    /**
-     * @brief 単一バイト読み込み
-     *
-     * @param data 結果を格納するバッファ
-     * @return bool 受信バッファに値がない場合はfalseが返ります。またその場合 *data は変化しません。
-     */
-    bool read(uint8_t* const data);
+    size_t write(const uint8_t data);
+    size_t write(const char* const data);
 
     /**
      * @brief 文字列書き込み
@@ -125,6 +114,14 @@ class USART {
      * @note 暫定実装です。送信バッファが満杯の場合はデータを切り捨てます。
      */
     size_t println(const char* const str);
+
+    /**
+     * @brief 単一バイト読み込み
+     *
+     * @param data 結果を格納するバッファ
+     * @return bool 受信バッファに値がない場合はfalseが返ります。またその場合 *data は変化しません。
+     */
+    bool read(uint8_t* const data);
 
     /**
      * @brief UDRレジスタ空割り込み
