@@ -6,6 +6,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "buffer.h"
@@ -17,33 +18,32 @@ constexpr buffer_size_t internalUSARTBufferSize = 32;
  */
 class USART {
    private:
+    uint8_t internalSendBufferDataPointer[internalUSARTBufferSize] = {0};
+    uint8_t internalRecvBufferDataPointer[internalUSARTBufferSize] = {0};
+
     /**
      * @brief 内部送信バッファ
      */
-    uint8_t internalSendBufferDataPointer[internalUSARTBufferSize] = {0};
     Buffer<uint8_t> internalSendBuffer;
 
     /**
      * @brief 内部受信バッファ
      */
-    uint8_t internalRecvBufferDataPointer[internalUSARTBufferSize] = {0};
     Buffer<uint8_t> internalRecvBuffer;
 
     /**
-     * @brief writeの内部処理
-     *
-     * @param data 書き込むデータ
-     * @return bool 処理結果
+     * @brief 送信バッファに書き込めるようになるまで待つ
      */
-    bool _write(const uint8_t data);
+    void waitForSendBufferAvailable() const {
+        // 送信バッファ割り込みを有効化 (無限ループ防止)
+        setSendBufferInterruption(true);
 
-    /**
-     * @brief printの内部処理
-     *
-     * @param str 書き込むデータ
-     * @return size_t 実際に書き込めたbyte数
-     */
-    size_t _print(const char* const str);
+        // 待機
+        volatile bool isFull = internalSendBuffer.isFull();
+        while (isFull) {
+            isFull = internalSendBuffer.isFull();
+        }
+    }
 
     /**
      * @brief ボーレート設定
@@ -93,27 +93,21 @@ class USART {
     void begin(const uint64_t& baudrate) const;
 
     /**
-     * @brief 単一バイト書き込み
+     * @brief USARTインタフェースへの出力
      *
      * @param data 書き込むデータ
-     * @return bool バッファが満杯等の理由で書き込みに失敗した場合はfalseが返ります。
+     * @return size_t 書き込んだバイト数
+     * @note この関数は内部送信バッファが空くまでブロックします。
      */
-    bool write(const uint8_t data);
-
-    /**
-     * @brief 単一バイト読み込み
-     *
-     * @param data 結果を格納するバッファ
-     * @return bool 受信バッファに値がない場合はfalseが返ります。またその場合 *data は変化しません。
-     */
-    bool read(uint8_t* const data);
+    size_t write(const uint8_t data);
+    size_t write(const char* const data);
 
     /**
      * @brief 文字列書き込み
      *
      * @param str 書き込む文字列
      * @return size_t 実際に書き込んだ文字数
-     * @note 暫定実装です。送信バッファが満杯の場合はデータを切り捨てます。
+     * @note 送信バッファが満杯の場合は、バッファが空くまでブロックします。
      */
     size_t print(const char* const str);
 
@@ -122,9 +116,43 @@ class USART {
      *
      * @param str 書き込む文字列
      * @return size_t 実際に書き込んだ文字数
-     * @note 暫定実装です。送信バッファが満杯の場合はデータを切り捨てます。
+     * @note 送信バッファが満杯の場合は、バッファが空くまでブロックします。
      */
     size_t println(const char* const str);
+
+    /**
+     * @brief 数値書き込み
+     *
+     * @param value 書き込む数値
+     * @return size_t 実際に書き込んだ文字数
+     */
+    size_t print(unsigned char value);
+    size_t print(int value);
+    size_t print(unsigned int value);
+    size_t print(double value);
+    size_t print(long value);
+    size_t print(unsigned long value);
+
+    /**
+     * @brief 数値書き込み(末尾に改行を追加)
+     *
+     * @param value 書き込む数値
+     * @return size_t 実際に書き込んだ文字数
+     */
+    size_t println(unsigned char value);
+    size_t println(int value);
+    size_t println(unsigned int value);
+    size_t println(double value);
+    size_t println(long value);
+    size_t println(unsigned long value);
+
+    /**
+     * @brief 単一バイト読み込み
+     *
+     * @param data 結果を格納するバッファ
+     * @return bool 受信バッファに値がない場合はfalseが返ります。またその場合 *data は変化しません。
+     */
+    bool read(uint8_t* const data);
 
     /**
      * @brief UDRレジスタ空割り込み
