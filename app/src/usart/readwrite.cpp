@@ -1,8 +1,6 @@
 //
-// USARTインタフェース(送受信)
+// USARTインタフェース (基本的な送受信)
 //
-#include <avr/io.h>
-
 #include "usart.h"
 
 size_t USART::write(const uint8_t data) {
@@ -25,15 +23,6 @@ size_t USART::write(const char* const data) {
     }
 
     return dataLength;
-}
-
-size_t USART::print(const char* const str) {
-    // 実質writeですが、フォーマット変換とかその辺を考える場合のために残しています
-    return write(str);
-}
-
-size_t USART::println(const char* const str) {
-    return write(str) + write("\r\n");
 }
 
 bool USART::read(uint8_t* const data) {

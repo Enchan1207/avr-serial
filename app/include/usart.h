@@ -6,6 +6,7 @@
 
 #include <stddef.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "buffer.h"
@@ -106,7 +107,7 @@ class USART {
      *
      * @param str 書き込む文字列
      * @return size_t 実際に書き込んだ文字数
-     * @note 暫定実装です。送信バッファが満杯の場合はデータを切り捨てます。
+     * @note 送信バッファが満杯の場合は、バッファが空くまでブロックします。
      */
     size_t print(const char* const str);
 
@@ -115,9 +116,35 @@ class USART {
      *
      * @param str 書き込む文字列
      * @return size_t 実際に書き込んだ文字数
-     * @note 暫定実装です。送信バッファが満杯の場合はデータを切り捨てます。
+     * @note 送信バッファが満杯の場合は、バッファが空くまでブロックします。
      */
     size_t println(const char* const str);
+
+    /**
+     * @brief 数値書き込み
+     *
+     * @param value 書き込む数値
+     * @return size_t 実際に書き込んだ文字数
+     */
+    size_t print(unsigned char value);
+    size_t print(int value);
+    size_t print(unsigned int value);
+    size_t print(double value);
+    size_t print(long value);
+    size_t print(unsigned long value);
+
+    /**
+     * @brief 数値書き込み(末尾に改行を追加)
+     *
+     * @param value 書き込む数値
+     * @return size_t 実際に書き込んだ文字数
+     */
+    size_t println(unsigned char value);
+    size_t println(int value);
+    size_t println(unsigned int value);
+    size_t println(double value);
+    size_t println(long value);
+    size_t println(unsigned long value);
 
     /**
      * @brief 単一バイト読み込み

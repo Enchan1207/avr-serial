@@ -10,9 +10,17 @@ target_include_directories(usart PUBLIC
 target_sources(usart PRIVATE
     event.cpp
     initialize.cpp
-    communicate.cpp
+    readwrite.cpp
     configure.cpp
+    print.cpp
+)
+target_link_libraries(usart PUBLIC
+    m
+    printf_flt
 )
 target_compile_options(usart PRIVATE
     -Wall
+)
+target_link_options(usart PUBLIC
+    -Wl,-u,vfprintf
 )
