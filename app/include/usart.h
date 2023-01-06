@@ -34,9 +34,13 @@ class USART {
      * @brief 送信バッファに書き込めるようになるまで待つ
      */
     void waitForSendBufferAvailable() const {
-        volatile bool isSendBufferUnAvailable = internalSendBuffer.isFull();
-        while (isSendBufferUnAvailable) {
-            isSendBufferUnAvailable = internalSendBuffer.isFull();
+        // 送信バッファ割り込みを有効化 (無限ループ防止)
+        setSendBufferInterruption(true);
+
+        // 待機
+        volatile bool isFull = internalSendBuffer.isFull();
+        while (isFull) {
+            isFull = internalSendBuffer.isFull();
         }
     }
 
