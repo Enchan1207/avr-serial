@@ -26,6 +26,13 @@ int main() {
     // Initialize UART
     usart.begin(115200);
 
+    usart.println((unsigned char)22);
+    usart.println(123);
+    usart.println((unsigned int)456);
+    usart.println(3.14);
+    usart.println(123456L);
+    usart.println(1234567890UL);
+
     while (true) {
         // 64文字
         // usart.println("leYD5Uel8bVJvWSbNt9psWWqFveCMyj1MXmUhx41tBZAEz9uErnMxTkFP7T1sw");
