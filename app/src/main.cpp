@@ -11,7 +11,7 @@
 #define bit_set(v, n) v |= _BV(n)
 #define bit_reset(v, n) v &= ~_BV(n)
 
-USART usart;
+USART usart(&UDR0, &UCSR0A, &UCSR0B, &UBRR0);
 
 constexpr uint8_t builtInLEDOffset = 5;  // Dev board has Built-in LED @ PORTB:5
 

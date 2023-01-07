@@ -32,6 +32,26 @@ class USART {
     Buffer<uint8_t> internalRecvBuffer;
 
     /**
+     * @brief USARTデータレジスタ
+     */
+    volatile uint8_t* udr;
+
+    /**
+     * @brief USART制御レジスタA
+     */
+    volatile uint8_t* ucsra;
+
+    /**
+     * @brief USART制御レジスタB
+     */
+    volatile uint8_t* ucsrb;
+
+    /**
+     * @brief USARTボーレート構成レジスタ
+     */
+    volatile uint16_t* ubrr;
+
+    /**
      * @brief 送信バッファに書き込めるようになるまで待つ
      */
     void waitForSendBufferAvailable() const {
@@ -74,7 +94,10 @@ class USART {
     void setReceiveInterruption(bool isEnable) const;
 
    public:
-    USART() : internalSendBuffer(internalSendBufferDataPointer, internalUSARTBufferSize), internalRecvBuffer(internalRecvBufferDataPointer, internalUSARTBufferSize){};
+    USART(volatile uint8_t* udr,
+          volatile uint8_t* ucsra,
+          volatile uint8_t* ucsrb,
+          volatile uint16_t* ubrr) : internalSendBuffer(internalSendBufferDataPointer, internalUSARTBufferSize), internalRecvBuffer(internalRecvBufferDataPointer, internalUSARTBufferSize), udr(udr), ucsra(ucsra), ucsrb(ucsrb), ubrr(ubrr){};
     ~USART() = default;
 
     // コピーコンストラクタの呼び出しを禁止

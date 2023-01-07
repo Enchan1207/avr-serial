@@ -1,8 +1,6 @@
 //
 // USARTインタフェース (イベントハンドリング)
 //
-#include <avr/io.h>
-
 #include "usart.h"
 
 void USART::onSendBufferEmpty() {
@@ -17,12 +15,12 @@ void USART::onSendBufferEmpty() {
     if (internalSendBuffer.pop(&data) != BufferResult::Success) {
         return;
     }
-    UDR0 = data;
+    *udr = data;
 }
 
 void USART::onReceive() {
     // UDRから読み出す
-    const uint8_t data = UDR0;
+    const uint8_t data = *udr;
 
     // 受信バッファに書き込み
     internalRecvBuffer.append(data);
