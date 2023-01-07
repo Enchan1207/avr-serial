@@ -1,7 +1,6 @@
 //
 // USARTインタフェース (初期化)
 //
-#include <avr/io.h>
 
 #include "usart.h"
 
