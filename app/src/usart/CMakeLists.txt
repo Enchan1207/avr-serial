@@ -8,11 +8,16 @@ target_include_directories(usart PUBLIC
     ${CMAKE_SOURCE_DIR}/include
 )
 target_sources(usart PRIVATE
+    abi.cpp
     event.cpp
     initialize.cpp
     readwrite.cpp
-    configure.cpp
     print.cpp
+
+    usart0.cpp
+    usart1.cpp
+    usart2.cpp
+    usart3.cpp
 )
 target_link_libraries(usart PUBLIC
     m

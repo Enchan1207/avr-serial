@@ -1,13 +1,17 @@
 //
 // USARTインタフェース (リッチな型変換)
 //
-#include "usart.h"
+#include <stdio.h>
 
-size_t USART::print(const char* const str) {
+#include "usart_base.hpp"
+
+namespace usart {
+
+size_t BaseUSART::print(const char* const str) {
     return write(str);
 }
 
-size_t USART::print(unsigned char value) {
+size_t BaseUSART::print(unsigned char value) {
     const size_t bufferSize = 8;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%d", value);
@@ -18,7 +22,7 @@ size_t USART::print(unsigned char value) {
     return bufferSize;
 }
 
-size_t USART::print(int value) {
+size_t BaseUSART::print(int value) {
     const size_t bufferSize = 16;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%d", value);
@@ -29,7 +33,7 @@ size_t USART::print(int value) {
     return bufferSize;
 }
 
-size_t USART::print(unsigned int value) {
+size_t BaseUSART::print(unsigned int value) {
     const size_t bufferSize = 16;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%u", value);
@@ -40,7 +44,7 @@ size_t USART::print(unsigned int value) {
     return bufferSize;
 }
 
-size_t USART::print(double value) {
+size_t BaseUSART::print(double value) {
     const size_t bufferSize = 32;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%lf", value);
@@ -51,7 +55,7 @@ size_t USART::print(double value) {
     return bufferSize;
 }
 
-size_t USART::print(long value) {
+size_t BaseUSART::print(long value) {
     const size_t bufferSize = 32;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%ld", value);
@@ -62,7 +66,7 @@ size_t USART::print(long value) {
     return bufferSize;
 }
 
-size_t USART::print(unsigned long value) {
+size_t BaseUSART::print(unsigned long value) {
     const size_t bufferSize = 32;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%lu", value);
@@ -73,30 +77,32 @@ size_t USART::print(unsigned long value) {
     return bufferSize;
 }
 
-size_t USART::println(const char* const str) {
+size_t BaseUSART::println(const char* const str) {
     return write(str) + write("\r\n");
 }
 
-size_t USART::println(unsigned char value) {
+size_t BaseUSART::println(unsigned char value) {
     return print(value) + write("\r\n");
 }
 
-size_t USART::println(int value) {
+size_t BaseUSART::println(int value) {
     return print(value) + write("\r\n");
 }
 
-size_t USART::println(unsigned int value) {
+size_t BaseUSART::println(unsigned int value) {
     return print(value) + write("\r\n");
 }
 
-size_t USART::println(double value) {
+size_t BaseUSART::println(double value) {
     return print(value) + write("\r\n");
 }
 
-size_t USART::println(long value) {
+size_t BaseUSART::println(long value) {
     return print(value) + write("\r\n");
 }
 
-size_t USART::println(unsigned long value) {
+size_t BaseUSART::println(unsigned long value) {
     return print(value) + write("\r\n");
 }
+
+}  // namespace usart

@@ -1,25 +1,25 @@
 //
-// USARTインタフェース
+// USARTインタフェース(抽象基底クラス)
 //
-#ifndef _USART_H_
-#define _USART_H_
+#ifndef _USART_BASE_H_
+#define _USART_BASE_H_
 
 #include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
-#include <string.h>
 
 #include "buffer.h"
 
-constexpr buffer_size_t internalUSARTBufferSize = 32;
+namespace usart {
+
+constexpr buffer_size_t usartBufferSize = 32;
 
 /**
- * @brief 非同期シリアル通信インタフェース
+ * @brief 非同期シリアル通信インタフェース 抽象基底クラス
  */
-class USART {
+class BaseUSART {
    private:
-    uint8_t internalSendBufferDataPointer[internalUSARTBufferSize] = {0};
-    uint8_t internalRecvBufferDataPointer[internalUSARTBufferSize] = {0};
+    uint8_t internalSendBufferDataPointer[usartBufferSize] = {0};
+    uint8_t internalRecvBufferDataPointer[usartBufferSize] = {0};
 
     /**
      * @brief 内部送信バッファ
@@ -34,22 +34,7 @@ class USART {
     /**
      * @brief USARTデータレジスタ
      */
-    volatile uint8_t* udr;
-
-    /**
-     * @brief USART制御レジスタA
-     */
-    volatile uint8_t* ucsra;
-
-    /**
-     * @brief USART制御レジスタB
-     */
-    volatile uint8_t* ucsrb;
-
-    /**
-     * @brief USARTボーレート構成レジスタ
-     */
-    volatile uint16_t* ubrr;
+    volatile uint8_t* const dataRegister;
 
     /**
      * @brief 送信バッファに書き込めるようになるまで待つ
@@ -70,43 +55,34 @@ class USART {
      *
      * @param baudrate 構成するボーレート
      */
-    void setBaudRate(const uint64_t& baudrate) const;
+    virtual void setBaudRate(const uint64_t&) const = 0;
 
     /**
      * @brief USARTインタフェースの有効化/無効化
      *
      * @param isEnable 有効/無効
      */
-    void setComuunicatability(bool isEnable) const;
+    virtual void setComuunicatability(bool) const = 0;
 
     /**
      * @brief 送信バッファempty割り込みの有効化/無効化
      *
      * @param isEnable 有効/無効
      */
-    void setSendBufferInterruption(bool isEnable) const;
+    virtual void setSendBufferInterruption(bool) const = 0;
 
     /**
      * @brief 受信割り込みの有効化/無効化
      *
      * @param isEnable 有効/無効
      */
-    void setReceiveInterruption(bool isEnable) const;
+    virtual void setReceiveInterruption(bool) const = 0;
 
    public:
-    USART(volatile uint8_t* udr,
-          volatile uint8_t* ucsra,
-          volatile uint8_t* ucsrb,
-          volatile uint16_t* ubrr) : internalSendBuffer(internalSendBufferDataPointer, internalUSARTBufferSize), internalRecvBuffer(internalRecvBufferDataPointer, internalUSARTBufferSize), udr(udr), ucsra(ucsra), ucsrb(ucsrb), ubrr(ubrr){};
-    ~USART() = default;
-
-    // コピーコンストラクタの呼び出しを禁止
-    USART(const USART&) = delete;
-    USART& operator=(const USART&) = delete;
-
-    // ムーブコンストラクタは呼び出し可能とする
-    USART(USART&&) = default;
-    USART& operator=(USART&&) = default;
+    explicit BaseUSART(volatile uint8_t* const dataRegister) : internalSendBuffer(internalSendBufferDataPointer, usartBufferSize),
+                                                               internalRecvBuffer(internalRecvBufferDataPointer, usartBufferSize),
+                                                               dataRegister(dataRegister){};
+    virtual ~BaseUSART() = default;
 
     /**
      * @brief USARTインタフェース初期化
@@ -190,8 +166,31 @@ class USART {
      * @note ISRから呼ばれることを想定しています。受信バッファが空でなければUDRレジスタからの読み出しを行います。
      */
     void onReceive();
+
+    /**
+     * @brief 演算子newのオーバライド
+     *
+     * @note USART0を動的オブジェクトとして初期化することはできません。
+     */
+    void* operator new(size_t) = delete;
+
+    /**
+     * @brief 演算子deleteのオーバライド
+     *
+     * @note 対応する演算子newが存在しないため、この関数は何もせずに返ります。 コンパイル時のエラーを抑制するための実装です。
+     */
+    void operator delete(void*) noexcept __attribute__((weak)) {
+        /* don't have to do anything because operator new is deleted */
+    }
 };
 
-extern USART usart;
+}  // namespace usart
+
+// BaseUSARTは純粋仮想デストラクタを持つので、この子たちはどこかに定義しておかないといけない
+// usart.hでは abi.cppにて stdlib.hの関数abortを呼ぶようにしています
+extern "C" {
+void __cxa_pure_virtual(void);
+void __cxa_deleted_virtual(void) __attribute__((weak, noreturn));
+}
 
 #endif
