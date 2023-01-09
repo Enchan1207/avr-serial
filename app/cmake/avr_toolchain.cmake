@@ -79,7 +79,7 @@ set(CMAKE_RANLIB "${AVRGCC_BIN}/avr-ranlib" CACHE PATH "ranlib" FORCE)
 set(AVRDUDE "${AVRDUDE_BIN}/avrdude" CACHE PATH "avrdude" FORCE)
 
 # compiler flags
-set(COMMON_FLAGS "-mmcu=${AVR_MCU} -DF_CPU=${AVR_FCPU}")
+set(COMMON_FLAGS "-mmcu=${AVR_MCU} -DF_CPU=${AVR_FCPU} -fno-threadsafe-statics -fno-exceptions")
 
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(OPTIMIZATION_FLAGS "-Os")
@@ -118,7 +118,7 @@ macro(target_configure_for_avr target_name)
 
     target_link_directories(${target_name} PUBLIC
         ${AVRGCC_ROOT}/avr/lib
-    )   
+    )
 endmacro()
 
 # add_executable
