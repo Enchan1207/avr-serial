@@ -189,7 +189,7 @@ class BaseUSART {
 // BaseUSARTは純粋仮想デストラクタを持つので、この子たちはどこかに定義しておかないといけない
 // usart.hでは abi.cppにて stdlib.hの関数abortを呼ぶようにしています
 extern "C" {
-void __cxa_pure_virtual(void);
+void __cxa_pure_virtual(void) __attribute__((weak, noreturn));
 void __cxa_deleted_virtual(void) __attribute__((weak, noreturn));
 }
 
