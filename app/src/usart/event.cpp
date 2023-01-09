@@ -1,11 +1,11 @@
 //
 // USARTインタフェース (イベントハンドリング)
 //
-#include <avr/io.h>
+#include "usart_base.hpp"
 
-#include "usart.h"
+namespace usart {
 
-void USART::onSendBufferEmpty() {
+void BaseUSART::onSendBufferEmpty() {
     // 送信バッファが空なら、割り込みを無効化して戻る
     if (internalSendBuffer.isEmpty()) {
         setSendBufferInterruption(false);
@@ -17,13 +17,15 @@ void USART::onSendBufferEmpty() {
     if (internalSendBuffer.pop(&data) != BufferResult::Success) {
         return;
     }
-    UDR0 = data;
+    *dataRegister = data;
 }
 
-void USART::onReceive() {
+void BaseUSART::onReceive() {
     // UDRから読み出す
-    const uint8_t data = UDR0;
+    const uint8_t data = *dataRegister;
 
     // 受信バッファに書き込み
     internalRecvBuffer.append(data);
 }
+
+}  // namespace usart

@@ -1,16 +1,20 @@
 //
 // USARTインタフェース (基本的な送受信)
 //
-#include "usart.h"
+#include <string.h>
 
-size_t USART::write(const uint8_t data) {
+#include "usart_base.hpp"
+
+namespace usart {
+
+size_t BaseUSART::write(const uint8_t data) {
     waitForSendBufferAvailable();
     internalSendBuffer.append(data);
     setSendBufferInterruption(true);
     return 1;
 }
 
-size_t USART::write(const char* const data) {
+size_t BaseUSART::write(const char* const data) {
     if (data == nullptr) {
         return 0;
     }
@@ -25,7 +29,9 @@ size_t USART::write(const char* const data) {
     return dataLength;
 }
 
-bool USART::read(uint8_t* const data) {
+bool BaseUSART::read(uint8_t* const data) {
     const BufferResult result = internalRecvBuffer.pop(data);
     return result == BufferResult::Success;
 }
+
+}  // namespace usart
