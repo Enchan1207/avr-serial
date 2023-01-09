@@ -3,18 +3,18 @@
 //
 #include <avr/interrupt.h>
 
-#include "usart.h"
+#include "usart.hpp"
 
 /**
  * 送信バッファ空き
  */
 ISR(USART_UDRE_vect) {
-    usart.onSendBufferEmpty();
+    usart::USART0::shared().onSendBufferEmpty();
 }
 
 /**
  * 受信完了
  */
 ISR(USART_RX_vect) {
-    usart.onReceive();
+    usart::USART0::shared().onReceive();
 }
