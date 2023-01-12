@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 #include "buffer.h"
+#include "pgmutil.hpp"
 
 namespace usart {
 
@@ -111,6 +112,15 @@ class BaseUSART {
     size_t print(const char* const str);
 
     /**
+     * @brief 文字列書き込み(フラッシュに保存されている文字を読み出す)
+     *
+     * @param str 書き込む文字列
+     * @return size_t 実際に書き込んだ文字数
+     * @note 送信バッファが満杯の場合は、バッファが空くまでブロックします。
+     */
+    size_t print(const FlashString* flashstr);
+
+    /**
      * @brief 文字列書き込み(末尾に改行を追加)
      *
      * @param str 書き込む文字列
@@ -118,6 +128,15 @@ class BaseUSART {
      * @note 送信バッファが満杯の場合は、バッファが空くまでブロックします。
      */
     size_t println(const char* const str);
+
+    /**
+     * @brief 文字列書き込み(末尾に改行を追加, フラッシュに保存されている文字を読み出す)
+     *
+     * @param str 書き込む文字列
+     * @return size_t 実際に書き込んだ文字数
+     * @note 送信バッファが満杯の場合は、バッファが空くまでブロックします。
+     */
+    size_t println(const FlashString* flashstr);
 
     /**
      * @brief 数値書き込み
