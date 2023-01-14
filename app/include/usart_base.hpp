@@ -59,13 +59,35 @@ class BaseUSART {
     virtual void setBaudRate(const uint64_t&) const = 0;
 
     /**
-     * @brief USARTインタフェースの有効化/無効化
+     * @brief USART送信許可設定
      *
      * @param isEnable 有効/無効
      */
-    virtual void setComuunicatability(bool) const = 0;
+    virtual void setSendability(bool) const = 0;
 
     /**
+     * @brief USART送信許可状態取得
+     *
+     * @return bool
+     */
+    virtual bool getSendability() const = 0;
+
+    /**
+     * @brief USART受信許可設定
+     *
+     * @param isEnable 有効/無効
+     */
+    virtual void setReceivability(bool) const = 0;
+
+    /**
+     * @brief USART受信許可状態取得
+     *
+     * @return bool
+     */
+    virtual bool getReceivability() const = 0;
+
+    /**
+     *
      * @brief 送信バッファempty割り込みの有効化/無効化
      *
      * @param isEnable 有効/無効

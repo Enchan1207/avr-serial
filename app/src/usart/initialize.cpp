@@ -11,7 +11,8 @@ void BaseUSART::begin(const uint64_t& baudrate) const {
     setBaudRate(baudrate);
 
     // 送受信有効化
-    setComuunicatability(true);
+    setReceivability(true);
+    setSendability(true);
 
     // 割り込み有効化
     setSendBufferInterruption(true);

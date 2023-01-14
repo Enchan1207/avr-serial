@@ -13,6 +13,9 @@
 #ifndef bit_reset
 #define bit_reset(v, n) v &= ~_BV(n)
 #endif
+#ifndef bit_get
+#define bit_get(v, n) (v & _BV(n)) >> n
+#endif
 
 // レジスタ名ほかの表記揺れを吸収
 #if defined(UDR) && !defined(UDR0)
@@ -50,30 +53,28 @@ void USART0::setBaudRate(const uint64_t& baudrate) const {
     UCSR0A |= _BV(U2X0);
 }
 
-void USART0::setComuunicatability(bool isEnable) const {
-    if (isEnable) {
-        bit_set(UCSR0B, TXEN0);
-        bit_set(UCSR0B, RXEN0);
-    } else {
-        bit_reset(UCSR0B, TXEN0);
-        bit_reset(UCSR0B, RXEN0);
-    }
+void USART0::setSendability(bool isEnable) const {
+    isEnable ? bit_set(UCSR0B, TXEN0) : bit_reset(UCSR0B, TXEN0);
+}
+
+bool USART0::getSendability() const {
+    return bit_get(UCSR0B, TXEN0);
+}
+
+void USART0::setReceivability(bool isEnable) const {
+    isEnable ? bit_set(UCSR0B, RXEN0) : bit_reset(UCSR0B, RXEN0);
+}
+
+bool USART0::getReceivability() const {
+    return bit_get(UCSR0B, RXEN0);
 }
 
 void USART0::setSendBufferInterruption(bool isEnable) const {
-    if (isEnable) {
-        bit_set(UCSR0B, UDRIE0);
-    } else {
-        bit_reset(UCSR0B, UDRIE0);
-    }
+    isEnable ? bit_set(UCSR0B, UDRIE0) : bit_reset(UCSR0B, UDRIE0);
 }
 
 void USART0::setReceiveInterruption(bool isEnable) const {
-    if (isEnable) {
-        bit_set(UCSR0B, RXCIE0);
-    } else {
-        bit_reset(UCSR0B, RXCIE0);
-    }
+    isEnable ? bit_set(UCSR0B, RXCIE0) : bit_reset(UCSR0B, RXCIE0);
 }
 
 }  // namespace usart

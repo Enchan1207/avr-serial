@@ -26,7 +26,10 @@ namespace usart {
 class USART0 final : public BaseUSART {
    private:
     void setBaudRate(const uint64_t&) const override;
-    void setComuunicatability(bool) const override;
+    void setSendability(bool) const override;
+    bool getSendability() const override;
+    void setReceivability(bool) const override;
+    bool getReceivability() const override;
     void setSendBufferInterruption(bool) const override;
     void setReceiveInterruption(bool) const override;
 
@@ -52,7 +55,9 @@ class USART0 final : public BaseUSART {
 #endif
 
 #if defined(UBRR1H)
+#ifdef MCU_HAS_NO_USART
 #undef MCU_HAS_NO_USART
+#endif
 #define MCU_HAS_USART1
 
 // エイリアス(名前が長いので)
@@ -66,7 +71,10 @@ namespace usart {
 class USART1 final : public BaseUSART {
    private:
     void setBaudRate(const uint64_t&) const override;
-    void setComuunicatability(bool) const override;
+    void setSendability(bool) const override;
+    bool getSendability() const override;
+    void setReceivability(bool) const override;
+    bool getReceivability() const override;
     void setSendBufferInterruption(bool) const override;
     void setReceiveInterruption(bool) const override;
 
@@ -92,7 +100,9 @@ class USART1 final : public BaseUSART {
 #endif
 
 #if defined(UBRR2H)
+#ifdef MCU_HAS_NO_USART
 #undef MCU_HAS_NO_USART
+#endif
 #define MCU_HAS_USART2
 
 // エイリアス(名前が長いので)
@@ -106,7 +116,10 @@ namespace usart {
 class USART2 final : public BaseUSART {
    private:
     void setBaudRate(const uint64_t&) const override;
-    void setComuunicatability(bool) const override;
+    void setSendability(bool) const override;
+    bool getSendability() const override;
+    void setReceivability(bool) const override;
+    bool getReceivability() const override;
     void setSendBufferInterruption(bool) const override;
     void setReceiveInterruption(bool) const override;
 
@@ -132,7 +145,9 @@ class USART2 final : public BaseUSART {
 #endif
 
 #if defined(UBRR3H)
+#ifdef MCU_HAS_NO_USART
 #undef MCU_HAS_NO_USART
+#endif
 #define MCU_HAS_USART3
 
 // エイリアス(名前が長いので)
@@ -146,7 +161,10 @@ namespace usart {
 class USART3 final : public BaseUSART {
    private:
     void setBaudRate(const uint64_t&) const override;
-    void setComuunicatability(bool) const override;
+    void setSendability(bool) const override;
+    bool getSendability() const override;
+    void setReceivability(bool) const override;
+    bool getReceivability() const override;
     void setSendBufferInterruption(bool) const override;
     void setReceiveInterruption(bool) const override;
 

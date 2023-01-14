@@ -13,6 +13,9 @@
 #ifndef bit_reset
 #define bit_reset(v, n) v &= ~_BV(n)
 #endif
+#ifndef bit_get
+#define bit_get(v, n) (v & _BV(n)) >> n
+#endif
 
 namespace usart {
 
@@ -31,14 +34,20 @@ void USART1::setBaudRate(const uint64_t& baudrate) const {
     UCSR1A |= _BV(U2X1);
 }
 
-void USART1::setComuunicatability(bool isEnable) const {
-    if (isEnable) {
-        bit_set(UCSR1B, TXEN1);
-        bit_set(UCSR1B, RXEN1);
-    } else {
-        bit_reset(UCSR1B, TXEN1);
-        bit_reset(UCSR1B, RXEN1);
-    }
+void USART1::setSendability(bool isEnable) const {
+    isEnable ? bit_set(UCSR1B, TXEN1) : bit_reset(UCSR1B, TXEN1);
+}
+
+bool USART1::getSendability() const {
+    return bit_get(UCSR1B, TXEN1);
+}
+
+void USART1::setReceivability(bool isEnable) const {
+    isEnable ? bit_set(UCSR1B, RXEN1) : bit_reset(UCSR1B, RXEN1);
+}
+
+bool USART1::getReceivability() const {
+    return bit_get(UCSR1B, RXEN1);
 }
 
 void USART1::setSendBufferInterruption(bool isEnable) const {
