@@ -11,6 +11,20 @@ size_t BaseUSART::print(const char* const str) {
     return write(str);
 }
 
+size_t BaseUSART::print_P(PGM_P flashstr) {
+    PGM_P currentStringPtr = flashstr;
+
+    // 文字列の終端に当たるまで出力
+    size_t writeCount = 0;
+    char c = pgm_read_byte(currentStringPtr++);
+    while (c != '\0') {
+        write(c);
+        writeCount++;
+        c = pgm_read_byte(currentStringPtr++);
+    }
+    return writeCount;
+}
+
 size_t BaseUSART::print(unsigned char value) {
     const size_t bufferSize = 8;
     char buf[bufferSize] = {0};
@@ -77,32 +91,36 @@ size_t BaseUSART::print(unsigned long value) {
     return bufferSize;
 }
 
+size_t BaseUSART::println_P(PGM_P flashstr) {
+    return print_P(flashstr) + print_P(PSTR("\r\n"));
+}
+
 size_t BaseUSART::println(const char* const str) {
-    return write(str) + write("\r\n");
+    return print(str) + print_P(PSTR("\r\n"));
 }
 
 size_t BaseUSART::println(unsigned char value) {
-    return print(value) + write("\r\n");
+    return print(value) + print_P(PSTR("\r\n"));
 }
 
 size_t BaseUSART::println(int value) {
-    return print(value) + write("\r\n");
+    return print(value) + print_P(PSTR("\r\n"));
 }
 
 size_t BaseUSART::println(unsigned int value) {
-    return print(value) + write("\r\n");
+    return print(value) + print_P(PSTR("\r\n"));
 }
 
 size_t BaseUSART::println(double value) {
-    return print(value) + write("\r\n");
+    return print(value) + print_P(PSTR("\r\n"));
 }
 
 size_t BaseUSART::println(long value) {
-    return print(value) + write("\r\n");
+    return print(value) + print_P(PSTR("\r\n"));
 }
 
 size_t BaseUSART::println(unsigned long value) {
-    return print(value) + write("\r\n");
+    return print(value) + print_P(PSTR("\r\n"));
 }
 
 }  // namespace usart

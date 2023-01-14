@@ -3,6 +3,7 @@
 //
 #include <avr/interrupt.h>
 #include <avr/io.h>
+#include <avr/pgmspace.h>
 #include <stdlib.h>
 #include <util/delay.h>
 
@@ -33,7 +34,7 @@ int main() {
 
     while (true) {
         // 64文字
-        Serial.println("leYD5Uel8bVJvWSbNt9psWWqFveCMyj1MXmUhx41tBZAEz9uErnMxTkFP7T1sw");
+        Serial.println_P(PSTR("leYD5Uel8bVJvWSbNt9psWWqFveCMyj1MXmUhx41tBZAEz9uErnMxTkFP7T1sw"));
 
         // 65文字
         // Serial.println("leYD5Uel8bVJvbNt9psWWqFveCMyj1MXmUhx41tBZAEz9uErnMxTkFP7T1sABCc");
