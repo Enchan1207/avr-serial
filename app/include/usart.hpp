@@ -31,7 +31,6 @@ class USART0 final : public BaseUSART {
     void setReceiveInterruption(bool) const override;
 
     USART0();
-    ~USART0() = default;
 
    public:
     USART0(const USART0&) = delete;
@@ -72,7 +71,6 @@ class USART1 final : public BaseUSART {
     void setReceiveInterruption(bool) const override;
 
     USART1();
-    ~USART1() = default;
 
    public:
     USART1(const USART1&) = delete;
@@ -113,7 +111,6 @@ class USART2 final : public BaseUSART {
     void setReceiveInterruption(bool) const override;
 
     USART2();
-    ~USART2() = default;
 
    public:
     USART2(const USART2&) = delete;
@@ -154,7 +151,6 @@ class USART3 final : public BaseUSART {
     void setReceiveInterruption(bool) const override;
 
     USART3();
-    ~USART3() = default;
 
    public:
     USART3(const USART3&) = delete;
