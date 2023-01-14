@@ -4,11 +4,11 @@
 #ifndef _USART_BASE_H_
 #define _USART_BASE_H_
 
+#include <avr/pgmspace.h>
 #include <stddef.h>
 #include <stdint.h>
 
 #include "buffer.h"
-#include "pgmutil.hpp"
 
 namespace usart {
 
@@ -80,10 +80,14 @@ class BaseUSART {
     virtual void setReceiveInterruption(bool) const = 0;
 
    public:
+    // -- constructor, destructor
+
     explicit BaseUSART(volatile uint8_t* const dataRegister) : internalSendBuffer(internalSendBufferDataPointer, usartBufferSize),
                                                                internalRecvBuffer(internalRecvBufferDataPointer, usartBufferSize),
                                                                dataRegister(dataRegister){};
     virtual ~BaseUSART() = default;
+
+    // -- initialize
 
     /**
      * @brief USARTインタフェース初期化
@@ -91,6 +95,8 @@ class BaseUSART {
      * @param baudrate 設定するボーレート
      */
     void begin(const uint64_t& baudrate) const;
+
+    // -- simple read/write
 
     /**
      * @brief USARTインタフェースへの出力
@@ -103,6 +109,14 @@ class BaseUSART {
     size_t write(const char* const data);
 
     /**
+     * @brief 単一バイト読み込み
+     *
+     * @param data 結果を格納するバッファ
+     * @return bool 受信バッファに値がない場合はfalseが返ります。またその場合 *data は変化しません。
+     */
+    bool read(uint8_t* const data);
+
+    /**
      * @brief 文字列書き込み
      *
      * @param str 書き込む文字列
@@ -112,31 +126,24 @@ class BaseUSART {
     size_t print(const char* const str);
 
     /**
-     * @brief 文字列書き込み(フラッシュに保存されている文字を読み出す)
-     *
-     * @param str 書き込む文字列
-     * @return size_t 実際に書き込んだ文字数
-     * @note 送信バッファが満杯の場合は、バッファが空くまでブロックします。
-     */
-    size_t print(const FlashString* flashstr);
-
-    /**
      * @brief 文字列書き込み(末尾に改行を追加)
      *
      * @param str 書き込む文字列
      * @return size_t 実際に書き込んだ文字数
-     * @note 送信バッファが満杯の場合は、バッファが空くまでブロックします。
      */
     size_t println(const char* const str);
 
     /**
-     * @brief 文字列書き込み(末尾に改行を追加, フラッシュに保存されている文字を読み出す)
+     * @brief 文字列書き込み (プログラムメモリに保存されている文字を読み出す)
      *
      * @param str 書き込む文字列
      * @return size_t 実際に書き込んだ文字数
-     * @note 送信バッファが満杯の場合は、バッファが空くまでブロックします。
      */
-    size_t println(const FlashString* flashstr);
+    size_t print_P(PGM_P flashstr);
+
+    size_t println_P(PGM_P flashstr);
+
+    // -- high-level output
 
     /**
      * @brief 数値書き込み
@@ -151,12 +158,6 @@ class BaseUSART {
     size_t print(long value);
     size_t print(unsigned long value);
 
-    /**
-     * @brief 数値書き込み(末尾に改行を追加)
-     *
-     * @param value 書き込む数値
-     * @return size_t 実際に書き込んだ文字数
-     */
     size_t println(unsigned char value);
     size_t println(int value);
     size_t println(unsigned int value);
@@ -164,13 +165,7 @@ class BaseUSART {
     size_t println(long value);
     size_t println(unsigned long value);
 
-    /**
-     * @brief 単一バイト読み込み
-     *
-     * @param data 結果を格納するバッファ
-     * @return bool 受信バッファに値がない場合はfalseが返ります。またその場合 *data は変化しません。
-     */
-    bool read(uint8_t* const data);
+    // -- Interrupt functions
 
     /**
      * @brief UDRレジスタ空割り込み
@@ -185,6 +180,8 @@ class BaseUSART {
      * @note ISRから呼ばれることを想定しています。受信バッファが空でなければUDRレジスタからの読み出しを行います。
      */
     void onReceive();
+
+    // -- overridden operators
 
     /**
      * @brief 演算子newのオーバライド
