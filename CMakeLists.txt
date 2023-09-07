@@ -15,7 +15,7 @@ set(CMAKE_TOOLCHAIN_FILE "${avr_toolchain_SOURCE_DIR}/cmake/avr_toolchain.cmake"
 
 # Project configuration
 project(avr-serial
-    VERSION 0.1.0
+    VERSION 0.1.1
     DESCRIPTION "UART interface library for AVR microcontroller"
     LANGUAGES C CXX
 )
