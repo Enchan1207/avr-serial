@@ -3,7 +3,7 @@
 //
 #include <stdio.h>
 
-#include "usart_base.hpp"
+#include "usart/usart.hpp"
 
 namespace usart {
 

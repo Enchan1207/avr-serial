@@ -3,7 +3,7 @@
 //
 #include <stdlib.h>
 
-#include "usart_base.hpp"
+#include "usart/usart.hpp"
 
 extern "C" void __cxa_pure_virtual(void) {
     abort();

@@ -1,10 +1,10 @@
 //
-// USARTインタフェース
+// USARTインタフェース(具象実装)
 //
-#ifndef _USART_H_
-#define _USART_H_
+#ifndef _USART_IMPL_H_
+#define _USART_IMPL_H_
 
-#include "usart_base.hpp"
+#include "usart/usart.hpp"
 
 // ターゲットが持つUSARTインタフェースに対応するクラスのみを定義したいので、
 // レジスタ定義の有無からI/Fの存在チェックを行う

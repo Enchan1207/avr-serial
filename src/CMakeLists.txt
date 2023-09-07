@@ -1,12 +1,9 @@
 #
-# SerialComm
+# avr-serial
 #
 cmake_minimum_required(VERSION 3.0)
 
-add_library_avr(usart)
-target_include_directories(usart PUBLIC
-    ${CMAKE_SOURCE_DIR}/include
-)
+add_library(usart)
 target_sources(usart PRIVATE
     abi.cpp
     event.cpp
@@ -18,6 +15,9 @@ target_sources(usart PRIVATE
     usart1.cpp
     usart2.cpp
     usart3.cpp
+)
+target_include_directories(usart PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
 )
 target_link_libraries(usart PUBLIC
     m
