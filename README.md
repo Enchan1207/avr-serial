@@ -1,8 +1,8 @@
-# SerialComm
+# avr-serial
 
 ## Overview
 
-serial (USART) communication
+UART interface library for AVR microcontroller
 
 ## License
 

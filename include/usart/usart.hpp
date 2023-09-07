@@ -1,14 +1,14 @@
 //
-// USARTインタフェース(抽象基底クラス)
+// USARTインタフェース
 //
-#ifndef _USART_BASE_H_
-#define _USART_BASE_H_
+#ifndef _USART_USART_H_
+#define _USART_USART_H_
 
 #include <avr/pgmspace.h>
 #include <stddef.h>
 #include <stdint.h>
 
-#include "buffer.h"
+#include "buffer.hpp"
 
 namespace usart {
 

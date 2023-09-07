@@ -3,7 +3,7 @@
 //
 #include <avr/io.h>
 
-#include "usart.hpp"
+#include "usart/usart.hpp"
 
 #ifdef MCU_HAS_USART0
 

@@ -1,12 +1,14 @@
 //
-// 小規模バッファ
+// 通信データバッファ
 //
 
-#ifndef _BUFFER_H_
-#define _BUFFER_H_
+#ifndef _USART_BUFFER_H_
+#define _USART_BUFFER_H_
 
 #include <limits.h>
 #include <stdint.h>
+
+namespace usart {
 
 /**
  * @brief バッファ操作結果
@@ -23,7 +25,7 @@ enum class BufferResult {
 using buffer_size_t = uint16_t;
 
 /**
- * @brief 小規模バッファ
+ * @brief バッファ
  *
  * @tparam Element 扱う要素の型
  */
@@ -100,19 +102,19 @@ class Buffer {
 
 template <typename Element>
 Buffer<Element>::Buffer(Element* const data, const buffer_size_t& dataSize) : internalData(data) {
-    // バッファサイズ型のビット数
-    const uint8_t bufferSizeBitLength = sizeof(buffer_size_t) * CHAR_BIT;
-
-    // 上からビットを立てていって、dataSizeとのANDで初めて非ゼロとなる値が最大値
-    for (uint8_t i = bufferSizeBitLength - 1; i > 0; i--) {
-        const buffer_size_t candidate = 1 << i;
-        if ((candidate & dataSize) == 0) {
-            continue;
-        }
-
-        internalDataSize = candidate;
-        break;
+    // ゼロ長のバッファなら何もしない
+    if (dataSize == 0) {
+        internalDataSize = dataSize;
+        return;
     }
+
+    // 与えられたサイズを上回らない最大の2の冪数を探す
+    unsigned char maxbitPos = 0;
+    buffer_size_t size = dataSize;
+    while ((size >>= 1) != 0) {
+        maxbitPos++;
+    }
+    internalDataSize = 1 << maxbitPos;
 };
 
 template <typename Element>
@@ -146,5 +148,7 @@ BufferResult Buffer<Element>::pop(Element* const data) {
 
     return BufferResult::Success;
 }
+
+};  // namespace usart
 
 #endif
