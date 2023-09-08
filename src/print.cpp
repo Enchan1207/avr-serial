@@ -1,17 +1,17 @@
 //
-// USARTインタフェース (リッチな型変換)
+// UARTインタフェース (リッチな型変換)
 //
 #include <stdio.h>
 
-#include "usart/usart.hpp"
+#include "uart/interface/base.hpp"
 
-namespace usart {
+namespace uart {
 
-size_t BaseUSART::print(const char* const str) {
+size_t UART::print(const char* const str) {
     return write(str);
 }
 
-size_t BaseUSART::print_P(PGM_P flashstr) {
+size_t UART::print_P(PGM_P flashstr) {
     PGM_P currentStringPtr = flashstr;
 
     // 文字列の終端に当たるまで出力
@@ -25,7 +25,7 @@ size_t BaseUSART::print_P(PGM_P flashstr) {
     return writeCount;
 }
 
-size_t BaseUSART::print(unsigned char value) {
+size_t UART::print(unsigned char value) {
     const size_t bufferSize = 8;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%d", value);
@@ -36,7 +36,7 @@ size_t BaseUSART::print(unsigned char value) {
     return bufferSize;
 }
 
-size_t BaseUSART::print(int value) {
+size_t UART::print(int value) {
     const size_t bufferSize = 16;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%d", value);
@@ -47,7 +47,7 @@ size_t BaseUSART::print(int value) {
     return bufferSize;
 }
 
-size_t BaseUSART::print(unsigned int value) {
+size_t UART::print(unsigned int value) {
     const size_t bufferSize = 16;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%u", value);
@@ -58,7 +58,7 @@ size_t BaseUSART::print(unsigned int value) {
     return bufferSize;
 }
 
-size_t BaseUSART::print(double value) {
+size_t UART::print(double value) {
     const size_t bufferSize = 32;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%lf", value);
@@ -69,7 +69,7 @@ size_t BaseUSART::print(double value) {
     return bufferSize;
 }
 
-size_t BaseUSART::print(long value) {
+size_t UART::print(long value) {
     const size_t bufferSize = 32;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%ld", value);
@@ -80,7 +80,7 @@ size_t BaseUSART::print(long value) {
     return bufferSize;
 }
 
-size_t BaseUSART::print(unsigned long value) {
+size_t UART::print(unsigned long value) {
     const size_t bufferSize = 32;
     char buf[bufferSize] = {0};
     int writtenCharLength = snprintf(buf, bufferSize, "%lu", value);
@@ -91,36 +91,36 @@ size_t BaseUSART::print(unsigned long value) {
     return bufferSize;
 }
 
-size_t BaseUSART::println_P(PGM_P flashstr) {
+size_t UART::println_P(PGM_P flashstr) {
     return print_P(flashstr) + print_P(PSTR("\r\n"));
 }
 
-size_t BaseUSART::println(const char* const str) {
+size_t UART::println(const char* const str) {
     return print(str) + print_P(PSTR("\r\n"));
 }
 
-size_t BaseUSART::println(unsigned char value) {
+size_t UART::println(unsigned char value) {
     return print(value) + print_P(PSTR("\r\n"));
 }
 
-size_t BaseUSART::println(int value) {
+size_t UART::println(int value) {
     return print(value) + print_P(PSTR("\r\n"));
 }
 
-size_t BaseUSART::println(unsigned int value) {
+size_t UART::println(unsigned int value) {
     return print(value) + print_P(PSTR("\r\n"));
 }
 
-size_t BaseUSART::println(double value) {
+size_t UART::println(double value) {
     return print(value) + print_P(PSTR("\r\n"));
 }
 
-size_t BaseUSART::println(long value) {
+size_t UART::println(long value) {
     return print(value) + print_P(PSTR("\r\n"));
 }
 
-size_t BaseUSART::println(unsigned long value) {
+size_t UART::println(unsigned long value) {
     return print(value) + print_P(PSTR("\r\n"));
 }
 
-}  // namespace usart
+}  // namespace uart

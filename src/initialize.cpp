@@ -1,12 +1,12 @@
 //
-// USARTインタフェース (初期化)
+// UARTインタフェース (初期化)
 //
 
-#include "usart/usart.hpp"
+#include "uart/interface/base.hpp"
 
-namespace usart {
+namespace uart {
 
-void BaseUSART::begin(const uint64_t& baudrate) const {
+void UART::begin(const uint64_t& baudrate) const {
     // ボーレート設定
     setBaudRate(baudrate);
 
@@ -19,4 +19,4 @@ void BaseUSART::begin(const uint64_t& baudrate) const {
     setReceiveInterruption(true);
 }
 
-}  // namespace usart
+}  // namespace uart

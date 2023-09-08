@@ -2,13 +2,12 @@
 // 通信データバッファ
 //
 
-#ifndef _USART_BUFFER_H_
-#define _USART_BUFFER_H_
+#ifndef UART_BUFFER_H
+#define UART_BUFFER_H
 
-#include <limits.h>
 #include <stdint.h>
 
-namespace usart {
+namespace uart {
 
 /**
  * @brief バッファ操作結果
@@ -149,6 +148,6 @@ BufferResult Buffer<Element>::pop(Element* const data) {
     return BufferResult::Success;
 }
 
-};  // namespace usart
+};  // namespace uart
 
 #endif

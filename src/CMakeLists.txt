@@ -3,29 +3,24 @@
 #
 cmake_minimum_required(VERSION 3.0)
 
-add_library(usart)
-target_sources(usart PRIVATE
-    abi.cpp
-    event.cpp
+add_library(uart)
+target_sources(uart PRIVATE
+    base.cpp
+    interrupt.cpp
     initialize.cpp
     readwrite.cpp
     print.cpp
-
-    usart0.cpp
-    usart1.cpp
-    usart2.cpp
-    usart3.cpp
 )
-target_include_directories(usart PUBLIC
+target_include_directories(uart PUBLIC
     ${PROJECT_SOURCE_DIR}/include
 )
-target_link_libraries(usart PUBLIC
+target_link_libraries(uart PUBLIC
     m
     printf_flt
 )
-target_compile_options(usart PRIVATE
+target_compile_options(uart PRIVATE
     -Wall
 )
-target_link_options(usart PUBLIC
+target_link_options(uart PUBLIC
     -Wl,-u,vfprintf
 )
