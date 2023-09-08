@@ -14,6 +14,7 @@ namespace uart {
 // レジスタ定義の有無からI/Fの存在チェックを行う
 
 #if defined(UBRRH) || defined(UBRR0H)
+#define HAS_UART_0
 
 // レジスタ名ほかの表記揺れを吸収
 #if defined(UDR) && !defined(UDR0)
@@ -30,24 +31,27 @@ namespace uart {
 #endif
 
 // Serial0
-UART Serial0({&UDR0, &UBRR0H, &UBRR0L, &UCSR0A, &UCSR0B, TXEN0, RXEN0, U2X0, UDRIE0, RXCIE0});
+extern UART Serial0;
 #define Serial Serial0
 
 #endif
 
 #if defined(UBRR1H)
+#define HAS_UART_1
 // Serial1
-UART Serial1({&UDR1, &UBRR1H, &UBRR1L, &UCSR1A, &UCSR1B, TXEN1, RXEN1, U2X1, UDRIE1, RXCIE1});
+extern UART Serial1;
 #endif
 
 #if defined(UBRR2H)
+#define HAS_UART_2
 // Serial2
-UART Serial2({&UDR2, &UBRR2H, &UBRR2L, &UCSR2A, &UCSR2B, TXEN2, RXEN2, U2X2, UDRIE2, RXCIE2});
+extern UART Serial2;
 #endif
 
 #if defined(UBRR3H)
+#define HAS_UART_3
 // Serial3
-UART Serial3({&UDR3, &UBRR3H, &UBRR3L, &UCSR3A, &UCSR3B, TXEN3, RXEN3, U2X3, UDRIE3, RXCIE3});
+extern UART Serial3;
 #endif
 
 }  // namespace uart
