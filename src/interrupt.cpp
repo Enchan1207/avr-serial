@@ -1,11 +1,11 @@
 //
-// USARTインタフェース (イベントハンドリング)
+// UARTインタフェース (イベントハンドリング)
 //
-#include "usart/usart.hpp"
+#include "uart/interface/base.hpp"
 
-namespace usart {
+namespace uart {
 
-void BaseUSART::onSendBufferEmpty() {
+void UART::onSendBufferEmpty() {
     // 送信バッファが空なら、割り込みを無効化して戻る
     if (internalSendBuffer.isEmpty()) {
         setSendBufferInterruption(false);
@@ -17,15 +17,15 @@ void BaseUSART::onSendBufferEmpty() {
     if (internalSendBuffer.pop(&data) != BufferResult::Success) {
         return;
     }
-    *dataRegister = data;
+    *(registerMap.data) = data;
 }
 
-void BaseUSART::onReceive() {
+void UART::onReceive() {
     // UDRから読み出す
-    const uint8_t data = *dataRegister;
+    const uint8_t data = *(registerMap.data);
 
     // 受信バッファに書き込み
     internalRecvBuffer.append(data);
 }
 
-}  // namespace usart
+}  // namespace uart

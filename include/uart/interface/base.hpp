@@ -1,26 +1,26 @@
 //
-// USARTインタフェース
+// UARTインタフェース 基底クラス
 //
-#ifndef _USART_USART_H_
-#define _USART_USART_H_
+#ifndef UART_BASE_H
+#define UART_BASE_H
 
 #include <avr/pgmspace.h>
-#include <stddef.h>
 #include <stdint.h>
 
 #include "buffer.hpp"
+#include "registermap.hpp"
 
-namespace usart {
+namespace uart {
 
-constexpr buffer_size_t usartBufferSize = 32;
+constexpr buffer_size_t uartBufferSize = 32;
 
 /**
- * @brief 非同期シリアル通信インタフェース 抽象基底クラス
+ * @brief UARTインタフェース 基底クラス
  */
-class BaseUSART {
+class UART final {
    private:
-    uint8_t internalSendBufferDataPointer[usartBufferSize] = {0};
-    uint8_t internalRecvBufferDataPointer[usartBufferSize] = {0};
+    uint8_t internalSendBufferDataPointer[uartBufferSize] = {0};
+    uint8_t internalRecvBufferDataPointer[uartBufferSize] = {0};
 
     /**
      * @brief 内部送信バッファ
@@ -33,58 +33,49 @@ class BaseUSART {
     Buffer<uint8_t> internalRecvBuffer;
 
     /**
-     * @brief USARTデータレジスタ
+     * @brief レジスタマップ
      */
-    volatile uint8_t* const dataRegister;
+    const UARTRegisterMap registerMap;
 
     /**
      * @brief 送信バッファに書き込めるようになるまで待つ
      */
-    void waitForSendBufferAvailable() const {
-        // 送信バッファ割り込みを有効化 (無限ループ防止)
-        setSendBufferInterruption(true);
-
-        // 待機
-        volatile bool isFull = internalSendBuffer.isFull();
-        while (isFull) {
-            isFull = internalSendBuffer.isFull();
-        }
-    }
+    void waitForSendBufferAvailable() const;
 
     /**
      * @brief ボーレート設定
      *
      * @param baudrate 構成するボーレート
      */
-    virtual void setBaudRate(const uint64_t&) const = 0;
+    void setBaudRate(const uint64_t&) const;
 
     /**
-     * @brief USART送信許可設定
+     * @brief UART送信許可設定
      *
      * @param isEnable 有効/無効
      */
-    virtual void setSendability(bool) const = 0;
+    void setSendability(bool) const;
 
     /**
-     * @brief USART送信許可状態取得
+     * @brief UART送信許可状態取得
      *
      * @return bool
      */
-    virtual bool getSendability() const = 0;
+    bool getSendability() const;
 
     /**
-     * @brief USART受信許可設定
+     * @brief UART受信許可設定
      *
      * @param isEnable 有効/無効
      */
-    virtual void setReceivability(bool) const = 0;
+    void setReceivability(bool) const;
 
     /**
-     * @brief USART受信許可状態取得
+     * @brief UART受信許可状態取得
      *
      * @return bool
      */
-    virtual bool getReceivability() const = 0;
+    bool getReceivability() const;
 
     /**
      *
@@ -92,27 +83,27 @@ class BaseUSART {
      *
      * @param isEnable 有効/無効
      */
-    virtual void setSendBufferInterruption(bool) const = 0;
+    void setSendBufferInterruption(bool) const;
 
     /**
      * @brief 受信割り込みの有効化/無効化
      *
      * @param isEnable 有効/無効
      */
-    virtual void setReceiveInterruption(bool) const = 0;
+    void setReceiveInterruption(bool) const;
 
    public:
     // -- constructor, destructor
 
-    explicit BaseUSART(volatile uint8_t* const dataRegister) : internalSendBuffer(internalSendBufferDataPointer, usartBufferSize),
-                                                               internalRecvBuffer(internalRecvBufferDataPointer, usartBufferSize),
-                                                               dataRegister(dataRegister){};
-    virtual ~BaseUSART() = default;
+    UART() = delete;
+    explicit UART(const UARTRegisterMap& registerMap) : internalSendBuffer(internalSendBufferDataPointer, uartBufferSize),
+                                                        internalRecvBuffer(internalRecvBufferDataPointer, uartBufferSize),
+                                                        registerMap(registerMap){};
 
     // -- initialize
 
     /**
-     * @brief USARTインタフェース初期化
+     * @brief UARTインタフェース初期化
      *
      * @param baudrate 設定するボーレート
      */
@@ -121,7 +112,7 @@ class BaseUSART {
     // -- simple read/write
 
     /**
-     * @brief USARTインタフェースへの出力
+     * @brief UARTインタフェースへの出力
      *
      * @param data 書き込むデータ
      * @return size_t 書き込んだバイト数
@@ -202,33 +193,8 @@ class BaseUSART {
      * @note ISRから呼ばれることを想定しています。受信バッファが空でなければUDRレジスタからの読み出しを行います。
      */
     void onReceive();
-
-    // -- overridden operators
-
-    /**
-     * @brief 演算子newのオーバライド
-     *
-     * @note USART0を動的オブジェクトとして初期化することはできません。
-     */
-    void* operator new(size_t) = delete;
-
-    /**
-     * @brief 演算子deleteのオーバライド
-     *
-     * @note 対応する演算子newが存在しないため、この関数は何もせずに返ります。 コンパイル時のエラーを抑制するための実装です。
-     */
-    void operator delete(void*) noexcept __attribute__((weak)) {
-        /* don't have to do anything because operator new is deleted */
-    }
 };
 
-}  // namespace usart
-
-// BaseUSARTは純粋仮想デストラクタを持つので、この子たちはどこかに定義しておかないといけない
-// usart.hでは abi.cppにて stdlib.hの関数abortを呼ぶようにしています
-extern "C" {
-void __cxa_pure_virtual(void) __attribute__((weak, noreturn));
-void __cxa_deleted_virtual(void) __attribute__((weak, noreturn));
-}
+}  // namespace uart
 
 #endif
