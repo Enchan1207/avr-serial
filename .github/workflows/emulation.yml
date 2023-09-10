@@ -28,14 +28,14 @@ jobs:
 
       - name: setup arduino-cli
         run: |
-          mkdir ~/local/bin
-          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=~/local/bin sh
+          mkdir -p ~/arduino-cli
+          curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=~/arduino-cli sh
 
       - name: configure for ${{matrix.mcu}}
         run: |
           mkdir build
           cd build
-          cmake .. -DARDUINOCLI_ROOT=~/local/bin -DAVR_SERIAL_BUILD_TESTS=ON -DAVR_MCU=${{matrix.mcu}}
+          cmake .. -DARDUINOCLI_ROOT=~/arduino-cli -DAVR_SERIAL_BUILD_TESTS=ON -DAVR_MCU=${{matrix.mcu}}
 
       - name: build
         working-directory: ${{github.workspace}}/build
