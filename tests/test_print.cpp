@@ -7,31 +7,23 @@
 
 #include "uart/uart.hpp"
 
+#ifndef MESSAGE
+#define MESSAGE "Hello,World"
+#endif
+
 using namespace uart;
 
 int main() {
     sei();
     Serial.begin(115200);
 
-    // バッファに収まる範囲の文字列
-
-    // オンメモリ
-    char const* shortMessageOnMemory = "message stored in SRAM";
-    Serial.println(shortMessageOnMemory);
-
-    // Flash
-    auto shortMessageOnFlash = PSTR("message stored in Flash");
-    Serial.println_P(shortMessageOnFlash);
-
-    // バッファ長を上回る文字列
-
-    // オンメモリ
-    char const* longMessageOnMemory = "A long message stored in SRAM was sent via UART.";
-    Serial.println(longMessageOnMemory);
-
-    // Flash
-    auto longMessageOnFlash = PSTR("A long message stored in Flash was sent via UART.");
-    Serial.println_P(longMessageOnFlash);
+#ifdef READ_FROM_FLASH
+    auto message = PSTR(MESSAGE);
+    Serial.print_P(message);
+#else
+    char const* message = MESSAGE;
+    Serial.print(message);
+#endif
 
     abort();
 }

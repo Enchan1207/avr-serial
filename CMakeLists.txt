@@ -38,6 +38,6 @@ add_subdirectory(src)
 option(AVR_SERIAL_BUILD_TESTS "Enable testing of avr-serial" OFF)
 if(AVR_SERIAL_BUILD_TESTS)
     message(NOTICE "avr-serial: testing enabled")
-
+    enable_testing()
     add_subdirectory(tests)
 endif()

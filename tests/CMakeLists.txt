@@ -4,8 +4,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 # AVR用テストターゲットジェネレータ
-macro(add_test_target source_file_name)
-    get_filename_component(target_name "${source_file_name}" NAME_WE)
+macro(add_test_target target_name source_file_name)
     add_executable(${target_name})
     target_sources(${target_name} PRIVATE
         isrs.cpp
@@ -17,5 +16,14 @@ macro(add_test_target source_file_name)
     target_configure_for_avr(${target_name})
 endmacro()
 
-# テストターゲットの構成
-add_test_target(test_print.cpp)
+# QEMUの -machine に渡す値と avr-gccの -mmcu に渡す値のマップ
+set(qemu_machine_map_atmega168 arduino-duemilanove)
+set(qemu_machine_map_atmega168p arduino-duemilanove)
+set(qemu_machine_map_atmega328 arduino-uno)
+set(qemu_machine_map_atmega328p arduino-uno)
+set(qemu_machine_map_atmega1280 arduino-mega)
+set(qemu_machine_map_atmega2560 arduino-mega-2560-v3)
+
+# テストケースの定義をinclude
+include(print.cmake)
+include(echoback.cmake)
