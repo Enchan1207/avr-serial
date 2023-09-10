@@ -8,6 +8,7 @@ target_sources(uart PRIVATE
     base.cpp
     interrupt.cpp
     initialize.cpp
+    impl.cpp
     readwrite.cpp
     print.cpp
 )

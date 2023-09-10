@@ -3,7 +3,9 @@
 #
 cmake_minimum_required(VERSION 3.0)
 
-# Configure AVR toolchain
+#
+# AVR toolchain configuration
+#
 include(FetchContent)
 FetchContent_Declare(
     avr_toolchain
@@ -13,7 +15,9 @@ FetchContent_Declare(
 FetchContent_Populate(avr_toolchain)
 set(CMAKE_TOOLCHAIN_FILE "${avr_toolchain_SOURCE_DIR}/cmake/avr_toolchain.cmake")
 
+#
 # Project configuration
+#
 project(avr-serial
     VERSION 0.1.1
     DESCRIPTION "UART interface library for AVR microcontroller"
@@ -27,3 +31,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 # source directory
 add_subdirectory(src)
+
+#
+# Testing configuration
+#
+option(AVR_SERIAL_BUILD_TESTS "Enable testing of avr-serial" OFF)
+if(AVR_SERIAL_BUILD_TESTS)
+    message(NOTICE "avr-serial: testing enabled")
+    enable_testing()
+    add_subdirectory(tests)
+endif()
