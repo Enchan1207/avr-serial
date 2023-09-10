@@ -32,6 +32,9 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=~/arduino-cli sh
           ~/arduino-cli/arduino-cli core install arduino:avr
 
+      - name: setup QEMU
+        run: sudo apt-get -y install qemu-system
+
       - name: configure for ${{matrix.mcu}}
         run: |
           mkdir build
