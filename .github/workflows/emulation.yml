@@ -26,11 +26,14 @@ jobs:
         with:
           python-version: "3.10"
 
+      - name: setup arduino-cli
+        run: curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=~/local/bin sh
+
       - name: configure for ${{matrix.mcu}}
         run: |
           mkdir build
           cd build
-          cmake .. -DAVR_SERIAL_BUILD_TESTS=ON -DAVR_MCU=${{matrix.mcu}}
+          cmake .. -DARDUINOCLI_ROOT=~/local/bin -DAVR_SERIAL_BUILD_TESTS=ON -DAVR_MCU=${{matrix.mcu}}
 
       - name: build
         working-directory: ${{github.workspace}}/build
