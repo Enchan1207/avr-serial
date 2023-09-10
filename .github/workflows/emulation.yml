@@ -30,12 +30,13 @@ jobs:
         run: |
           mkdir -p ~/arduino-cli
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | BINDIR=~/arduino-cli sh
+          ~/arduino-cli/arduino-cli core install arduino:avr
 
       - name: configure for ${{matrix.mcu}}
         run: |
           mkdir build
           cd build
-          cmake .. -DARDUINOCLI_ROOT=~/arduino-cli -DAVR_SERIAL_BUILD_TESTS=ON -DAVR_MCU=${{matrix.mcu}}
+          cmake .. -DAVR_SERIAL_BUILD_TESTS=ON -DAVR_MCU=${{matrix.mcu}}
 
       - name: build
         working-directory: ${{github.workspace}}/build
