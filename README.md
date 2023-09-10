@@ -35,7 +35,7 @@ If MCU has multiple UART interfaces, `Serial1` , `Serial2`, ... is also defined 
 
 For example:
 
-```c++: main.cpp
+```cpp
 // file: main.cpp
 //
 // Simple transmit loop
